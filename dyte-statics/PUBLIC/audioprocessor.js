@@ -14,7 +14,8 @@ class MyAudioProcessor extends AudioWorkletProcessor{
         const input = inputs[0];
 
         output.forEach((channel) => {
-            console.log("data is avaliable");
+            console.log("data is avaliable",channel);
+            console.log("input is",inputs);
           for (let i = 0; i < channel.length; i++) {
             channel[i] =  channel[i] ;
               
