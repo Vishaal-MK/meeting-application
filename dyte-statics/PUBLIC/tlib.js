@@ -124,9 +124,6 @@ async function activateTranscriptions(param) {
   if (!((_a = param == null ? void 0 : param.meeting) == null ? void 0 : _a.self)) {
     throw new Error("arguments[0].meeting.self is not available. Did you miss calling new DyteClient first?");
   }
-  if (!(param == null ? void 0 : param.symblAccessToken)) {
-    throw new Error("Missing arguments[0].symblAccessToken. We need symbl access token to retrive conversations and to generate transcriptions");
-  }
   return activateTranscriptions$1(param);
 }
 async function deactivateTranscriptions(param) {
