@@ -1,0 +1,1 @@
+#define DEFAULT_STATIC_DIRECTORY "dyte-statics/"

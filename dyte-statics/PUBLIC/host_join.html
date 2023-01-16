@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Host</title>
+  </head>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+    crossorigin="anonymous"
+  />
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+    crossorigin="anonymous"
+  ></script>
+  <body>
+    <style>
+      .liveAlertPlaceholder{
+        background-color: aqua;
+      }
+    </style>
+    <div
+      class="d-inline-flex flex-column mb-2 mx-auto position-absolute top-50 start-50 translate-middle"
+    >
+    <input type="text" name="name" id="name" placeholder="Enter Name" />
+    
+    <div class="input-group mb-3">
+      <input
+      type="text"
+      id="URL"
+      readonly
+      class="form-control"
+      placeholder="Recipient's username"
+      aria-label="Recipient's username"
+      aria-describedby="button-addon2"
+      />
+      <button
+      class="btn btn-outline-secondary"
+      type="button"
+      id="button-addon2"
+      >
+      <img src="/copy-image.png" alt="copy" width="30px" />
+    </button>
+    
+  </div>
+  <button class="btn btn-primary" id="join">Join</button>
+</div>
+<div id="liveAlertPlaceholder" class="position-absolute bottom-0 end-0"></div>
+
+      <script>
+        console.log("cookie", document.cookie);
+        function gc(name) {
+          var match = document.cookie.match(
+            new RegExp("(^| )" + name + "=([^;]+)")
+          );
+          if (match) return match[2];
+        }
+
+        let meetId = gc("meetId");
+        let roomid = gc("roomName");
+        let ht = gc("hostType");
+
+        let url = document.location.protocol;
+        url += "//";
+        url += window.location.host;
+        url += `/join-meeting?mid=${meetId}&rn=${roomid}`;
+
+        document.getElementById("URL").value = url;
+
+        document.getElementById("join").addEventListener("click", () => {
+          let a = url;
+          a += "&hostType=";
+          a += ht;
+          a += "&name=";
+          a += document.getElementById("name").value;
+
+          window.location.href = a;
+        });
+        const alertPlaceholder = document.getElementById(
+          "liveAlertPlaceholder"
+        );
+
+        const alert = (message, type) => {
+          const wrapper = document.createElement("div");
+          wrapper.innerHTML = [
+            `<div class="alert alert-${type} alert-dismissible" role="alert">`,
+            `   <div>${message}</div>`,
+            '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+            "</div>",
+          ].join("");
+
+          alertPlaceholder.append(wrapper);
+        };
+
+        document
+          .getElementById("button-addon2")
+          .addEventListener("click", () => {
+            navigator.clipboard.writeText(url);
+            alert("Link copied to clipboard!!!","success")
+          });
+      </script>
+
+  </body>
+</html>

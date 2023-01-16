@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meet</title>
+    <script>var exports = {};</script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module">
+        import { defineCustomElements } from 'https://cdn.jsdelivr.net/npm/@dytesdk/ui-kit/loader/index.es2017.js';
+        defineCustomElements();
+      </script>
+    <script src="https://cdn.dyte.in/core/dyte.js"></script>
+
+  <style>
+    .divx{
+        color: white;
+         font-size: medium;
+
+        text-align: center;
+        position: fixed;
+        width: 100%;
+         bottom: 10%;
+         
+    }
+   
+  </style>
+  
+</head>
+<body>
+    <dyte-meeting id="my-meeting" show-setup-screen="true"></dyte-meeting>
+    <div class="divx" id="divx">
+        
+
+    </div>
+    <script>
+     window.roomname = "{{roomname}}"
+     window.authtoken = {{authtoken}}
+
+    </script>
+    <script src="index.js" type="module" ></script>
+     
+</body>
+</html>
