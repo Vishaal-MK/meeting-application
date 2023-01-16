@@ -62,10 +62,10 @@ async function activateTranscriptions$1({
   
   };
   ws2.onerror = (err) => {
-    console.error("Symbl websocket error: ", err);
+    console.error("Websocket error: ", err);
   };
   ws2.onclose = () => {
-    console.info("Connection to Symbl websocket closed");
+    console.info("Connection to Websocket closed");
   };
   ws2.onopen = () => {
     ws2.send(JSON.stringify({

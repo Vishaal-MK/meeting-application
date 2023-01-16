@@ -50,7 +50,7 @@ RESPONSE create_meet_api(httpRequest req, httpResponse res, void *)
 
             if (response["Error"] == false && response["data"]["success"] == true)
             {
-                std::string aa = "http://meeting.dhisha.in/join-meeting?mid=";
+                std::string aa = "http://meeting.bhasa.io/join-meeting?mid=";
 
                 aa += meetId;
                 aa += "&rn=";
