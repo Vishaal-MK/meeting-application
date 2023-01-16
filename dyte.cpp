@@ -229,6 +229,7 @@ int main()
     server.onRequest("/join-participant", "PUBLIC/join-meeting.html", MIME_TYPE_text_html);
     server.onRequest("/copy-image.png", "PUBLIC/index.png", MIME_TYPE_image_png);
     server.onRequest("/user.webp","PUBLIC/user.webp",MIME_TYPE_image_webp);
+            server.onRequest("/audioprocessor.js", "PUBLIC/audioprocessor.js", MIME_TYPE_text_javascript);
 
     server.start();
     server.wait();
