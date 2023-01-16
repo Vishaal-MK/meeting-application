@@ -59,7 +59,8 @@ async function activateTranscriptions$1({
   symblAccessToken,
   languageCode
 }) {
- 
+ console.log("activaing trans");
+  return;
   deactivateTranscriptions$1({ meeting });
   meeting.meta.roomName;
   const symblEndpoint = "wss://transcribe-api.bhasa.io/ws/record";
