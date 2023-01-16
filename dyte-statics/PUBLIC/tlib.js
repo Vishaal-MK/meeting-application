@@ -59,6 +59,7 @@ async function activateTranscriptions$1({
   symblAccessToken,
   languageCode
 }) {
+  return;
   deactivateTranscriptions$1({ meeting });
   meeting.meta.roomName;
   const symblEndpoint = "wss://transcribe-api.bhasa.io/ws/record";
@@ -93,7 +94,7 @@ async function activateTranscriptions$1({
     }
  
   };
-  ws2.onerror = (err) => {
+ /* ws2.onerror = (err) => {
     console.error("Symbl websocket error: ", err);
   };
   ws2.onclose = () => {
@@ -104,7 +105,7 @@ async function activateTranscriptions$1({
       meeting_id: window.roomname,
       participant_id : meeting.self.name
     }));
-  };
+  }; */
  return meeting.self.addAudioMiddleware(audioTranscriptionMiddleware);
 }
 async function deactivateTranscriptions$1({
