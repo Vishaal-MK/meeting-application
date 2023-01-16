@@ -10,6 +10,7 @@ let floatTo16Bit = function floatTo16BitPCM(input) {
 class MyAudioProcessor extends AudioWorkletProcessor{
     process(inputs, outputs, parameters) {
         const output = outputs[0];
+        console.log("f");
         const input = inputs[0];
 
         input.forEach((channel) => {
