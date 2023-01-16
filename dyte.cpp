@@ -183,7 +183,7 @@ RESPONSE join_meet(httpRequest req, httpResponse res, void *)
     j["clientSpecificId"] = getRandomSessionId(5);
     j["roleName"] = ht;
     j["userDetails"]["name"] = name;
-    j["userDetails"]["picture"] = "http://example.com";
+    j["userDetails"]["picture"] = "http://meeting.bhasa.io/user.webp";
     try
     {
         nlohmann::json response = API::post(u1, j.dump(), {{"Authorization", auth_value}, {"Content-Type", "application/json"}});
@@ -228,6 +228,8 @@ int main()
     server.onRequest("/tlib.js", "PUBLIC/tlib.js", MIME_TYPE_text_javascript);
     server.onRequest("/join-participant", "PUBLIC/join-meeting.html", MIME_TYPE_text_html);
     server.onRequest("/copy-image.png", "PUBLIC/index.png", MIME_TYPE_image_png);
+    server.onRequest("/user.webp","PUBLIC/user.webp",MIME_TYPE_image_webp);
+
     server.start();
     server.wait();
 
