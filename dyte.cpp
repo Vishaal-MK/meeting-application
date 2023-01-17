@@ -230,6 +230,7 @@ int main()
     server.onRequest("/copy-image.png", "PUBLIC/index.png", MIME_TYPE_image_png);
     server.onRequest("/user.webp","PUBLIC/user.webp",MIME_TYPE_image_webp);
             server.onRequest("/audioprocessor.js", "PUBLIC/audioprocessor.js", MIME_TYPE_text_javascript);
+        server.onRequest("/google-processor.js", "PUBLIC/google-processor.js", MIME_TYPE_text_javascript);
 
     server.start();
     server.wait();
