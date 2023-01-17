@@ -1,3 +1,11 @@
+function floatTo16BitPCM(input) {
+          let output = new Int16Array(input.length);
+          for (let i = 0; i < input.length; i++) {
+              let s = Math.max(-1, Math.min(1, input[i]));
+              output[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+          }
+          return output;
+      }
 let ws;
 function getWebSocket() {
   return ws;
@@ -27,7 +35,8 @@ async function recordMeeting(track) {
     const ws2 = getWebSocket();
     const a = [1, 2, 4];
     if ((ws2 == null ? void 0 : ws2.readyState) === WebSocket.OPEN) {
-      ws2.send(e.data);
+      let x = floatTo16BitPCM(e.data);
+      ws2.send(x.buffer);
     } else {
       console.log("error", ws2.readyState);
     }
