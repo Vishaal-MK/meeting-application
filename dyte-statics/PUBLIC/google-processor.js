@@ -54,8 +54,8 @@ class RecorderProcessor extends AudioWorkletProcessor {
         const buffer = this._bytesWritten < this.bufferSize
             ? this._buffer.slice(0, this._bytesWritten)
             : this._buffer;
-        const result = this.downsampleBuffer(buffer, 44100, 16000);
-        this.port.postMessage(result);
+    //    const result = this.downsampleBuffer(buffer, 44100, 16000);
+        this.port.postMessage(buffer);
         this.initBuffer();
     }
 
