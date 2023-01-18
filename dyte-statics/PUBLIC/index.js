@@ -71,7 +71,7 @@ const init = async () => {
       JSON.stringify({
         meeting_id: window.roomname,
         participant_id: meeting.self.name,
-        sampleRate:context.sampleRate
+        sample_rate:context.sampleRate
       })
     );
   };
