@@ -67,7 +67,7 @@ RESPONSE create_meet_api(httpRequest req, httpResponse res, void *)
                 j["success"] = true;
                 j["roomName"] = roomName;
                 j["meetId"] = meetId;
-                j['url'] = aa;
+                j["url"] = aa;
             }
             else
             {
