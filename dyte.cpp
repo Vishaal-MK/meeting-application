@@ -28,6 +28,15 @@ RESPONSE create_meet_api(httpRequest req, httpResponse res, void *)
 {
     nlohmann::json j;
     std::string title = req._GET("title");
+    std::string onstart = req._GET("startrecording");
+    bool x = false;
+    if (!onstart.empty())
+    {
+        if (onstart.compare("true"))
+        {
+            x = true;
+        }
+    }
     if (title.empty())
     {
         j["success"] = false;
@@ -36,7 +45,7 @@ RESPONSE create_meet_api(httpRequest req, httpResponse res, void *)
     {
         nlohmann::json jx;
         jx["title"] = title;
-        jx["recordOnStart"] = false;
+        jx["recordOnStart"] = x;
         jx["liveStreamOnStart"] = false;
 
         jx["presetName"] = "new_preset";
@@ -50,15 +59,14 @@ RESPONSE create_meet_api(httpRequest req, httpResponse res, void *)
 
             if (response["Error"] == false && response["data"]["success"] == true)
             {
-                std::string aa = "http://meeting.bhasa.io/join-meeting?mid=";
+                std::string aa = "http://127.0.0.1:8088/join-meeting?mid=";
 
                 aa += meetId;
                 aa += "&rn=";
                 aa += roomName;
                 j["success"] = true;
                 j["roomName"] = roomName;
-                j["meetId"]  = meetId;
-                j["url"] = aa;
+                j["meetId"] = meetId;
             }
             else
             {
@@ -99,7 +107,7 @@ RESPONSE close_meet(httpRequest req, httpResponse res, void *)
         resp["title"] = title;
 
         nlohmann::json response = API::put(baseurl, resp.dump(), {{"Authorization", auth_value}, {"Content-Type", "application/json"}});
-         console::log(response.dump());
+        console::log(response.dump());
         resjson["success"] = true;
         resjson["data"] = response;
     }
@@ -116,7 +124,7 @@ RESPONSE create_meet(httpRequest req, httpResponse res, void *)
     j["recordOnStart"] = false;
     j["liveStreamOnStart"] = false;
 
-    j["presetName"] = "new_preset";
+    j["presetName"] = "Bhasa";
     j["authorization"]["waitingRoom"] = false;
     j["authorization"]["closed"] = false;
     try
@@ -125,7 +133,8 @@ RESPONSE create_meet(httpRequest req, httpResponse res, void *)
 
         std::string meetId = response["data"]["data"]["meeting"]["id"];
         std::string roomName = response["data"]["data"]["meeting"]["roomName"];
-
+        console::log("response is");
+        console::log(response.dump());
         if (response["Error"] == false && response["data"]["success"] == true)
         {
 
@@ -183,11 +192,13 @@ RESPONSE join_meet(httpRequest req, httpResponse res, void *)
     j["clientSpecificId"] = getRandomSessionId(5);
     j["roleName"] = ht;
     j["userDetails"]["name"] = name;
-    j["userDetails"]["picture"] = "http://meeting.bhasa.io/user.webp";
+    j["userDetails"]["picture"] = "http://example.com";
+    console::log("sending data is ");
+    console::log(j.dump());
     try
     {
         nlohmann::json response = API::post(u1, j.dump(), {{"Authorization", auth_value}, {"Content-Type", "application/json"}});
-        //console::log(response.dump());
+        // console::log(response.dump());
         if (response["data"]["success"])
         {
 
@@ -213,25 +224,24 @@ RESPONSE join_meet(httpRequest req, httpResponse res, void *)
 }
 int main()
 {
-    // f << "[+]------------------------------------------------------" << std::endl;
 
     webserver server("127.0.0.1", 8088);
 
     server.onRequest("/", index_file);
     server.onRequest("/index.js", index_JS_file);
-    // server.onRequest("/create-meeting", create_meet);
+    server.onRequest("/create-meeting", create_meet);
     server.onRequest("/create-meeting-api", create_meet_api);
     server.onRequest("/join-meeting", join_meet);
     server.onRequest("/host-join", host_joinmeet);
     server.onRequest("/close-meeting-api", close_meet);
-    server.onRequest("/dhisha-logo.png","PUBLIC/dhisha-logo.png",MIME_TYPE_image_png);
+    server.onRequest("/disha-logo.png", "PUBLIC/dhisa-logo.png", MIME_TYPE_image_png);
     server.onRequest("/tlib.js", "PUBLIC/tlib.js", MIME_TYPE_text_javascript);
+    server.onRequest("/audioprocessor.js", "PUBLIC/audioprocessor.js", MIME_TYPE_text_javascript);
+    server.onRequest("/google-processor.js", "PUBLIC/google-processor.js", MIME_TYPE_text_javascript);
+
     server.onRequest("/join-participant", "PUBLIC/join-meeting.html", MIME_TYPE_text_html);
     server.onRequest("/copy-image.png", "PUBLIC/index.png", MIME_TYPE_image_png);
-    server.onRequest("/user.webp","PUBLIC/user.webp",MIME_TYPE_image_webp);
-            server.onRequest("/audioprocessor.js", "PUBLIC/audioprocessor.js", MIME_TYPE_text_javascript);
-        server.onRequest("/google-processor.js", "PUBLIC/google-processor.js", MIME_TYPE_text_javascript);
-
+    server.onRequest("/user.webp", "PUBLIC/user.webp", MIME_TYPE_image_webp);
     server.start();
     server.wait();
 
