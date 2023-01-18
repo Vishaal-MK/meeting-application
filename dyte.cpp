@@ -28,7 +28,7 @@ RESPONSE create_meet_api(httpRequest req, httpResponse res, void *)
 {
     nlohmann::json j;
     std::string title = req._GET("title");
-    std::string onstart = req._GET("startrecording");
+    std::string onstart = req._GET("startRecording");
     bool x = false;
     if (!onstart.empty())
     {
