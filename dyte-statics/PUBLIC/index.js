@@ -1,11 +1,11 @@
 function floatTo16BitPCM(input) {
-          let output = new Int16Array(input.length);
-          for (let i = 0; i < input.length; i++) {
-              let s = Math.max(-1, Math.min(1, input[i]));
-              output[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
-          }
-          return output;
-      }
+  let output = new Int16Array(input.length);
+  for (let i = 0; i < input.length; i++) {
+    let s = Math.max(-1, Math.min(1, input[i]));
+    output[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
+  }
+  return output;
+}
 let ws;
 function getWebSocket() {
   return ws;
@@ -13,17 +13,16 @@ function getWebSocket() {
 function setWebSocket(newWS) {
   ws = newWS;
 }
+var context;
 async function recordMeeting(track) {
-  var context = new AudioContext({
-    latencyHint: "interactive",
-  });
+ 
 
   await context.audioWorklet.addModule("google-processor.js");
   context.resume();
 
   var globalStream = new MediaStream();
   globalStream.addTrack(track);
-
+  
   var input = context.createMediaStreamSource(globalStream);
   var processor = new window.AudioWorkletNode(context, "recorder.worklet");
   processor.connect(context.destination);
@@ -53,11 +52,13 @@ const init = async () => {
   });
 
   document.getElementById("my-meeting").meeting = meeting;
+   context = new AudioContext({
+    latencyHint: "interactive",
+  });
   const ws2 = new WebSocket("wss://transcribe-api.bhasa.io/ws/record");
   setWebSocket(ws2);
-  console.log("websocket assigned");
+
   ws2.onmessage = async (event) => {
-    console.log("data is arrived", event);
   };
   ws2.onerror = (err) => {
     console.error("websocket error: ", err);
@@ -66,14 +67,15 @@ const init = async () => {
     console.info("Connection to websocket closed");
   };
   ws2.onopen = () => {
-    console.log("connecyion is open");
     ws2.send(
       JSON.stringify({
         meeting_id: window.roomname,
         participant_id: meeting.self.name,
+        sampleRate:context.sampleRate
       })
     );
   };
+
   recordMeeting(meeting.self.audioTrack);
 };
 
