@@ -48,7 +48,7 @@ RESPONSE create_meet_api(httpRequest req, httpResponse res, void *)
         jx["recordOnStart"] = x;
         jx["liveStreamOnStart"] = false;
 
-        jx["presetName"] = "new_preset";
+        jx["presetName"] = "Bhasa";
         jx["authorization"]["waitingRoom"] = false;
         jx["authorization"]["closed"] = false;
         try
@@ -59,7 +59,7 @@ RESPONSE create_meet_api(httpRequest req, httpResponse res, void *)
 
             if (response["Error"] == false && response["data"]["success"] == true)
             {
-                std::string aa = "http://127.0.0.1:8088/join-meeting?mid=";
+                std::string aa = "https://meeting.bhasa.io/join-meeting?mid=";
 
                 aa += meetId;
                 aa += "&rn=";
@@ -67,6 +67,7 @@ RESPONSE create_meet_api(httpRequest req, httpResponse res, void *)
                 j["success"] = true;
                 j["roomName"] = roomName;
                 j["meetId"] = meetId;
+                j['url'] = aa;
             }
             else
             {
@@ -103,7 +104,7 @@ RESPONSE close_meet(httpRequest req, httpResponse res, void *)
         baseurl += meetId;
         nlohmann::json resp;
         resp["status"] = "CLOSED";
-        resp["presetName"] = "new_preset";
+        resp["presetName"] = "Bhasa";
         resp["title"] = title;
 
         nlohmann::json response = API::put(baseurl, resp.dump(), {{"Authorization", auth_value}, {"Content-Type", "application/json"}});
