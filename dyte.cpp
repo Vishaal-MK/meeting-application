@@ -165,7 +165,10 @@ RESPONSE host_joinmeet(httpRequest req, httpResponse res, void *)
     res.setContentType(MIME_TYPE_text_html);
     return res.render("PUBLIC/host_join.html", 0);
 }
-
+RESPONSE checklat(httpRequest req, httpResponse res, void *)
+{
+return res.HttpResponse("sample text");
+}
 RESPONSE join_meet(httpRequest req, httpResponse res, void *)
 {
 
@@ -239,6 +242,7 @@ int main()
     server.onRequest("/tlib.js", "PUBLIC/tlib.js", MIME_TYPE_text_javascript);
     server.onRequest("/audioprocessor.js", "PUBLIC/audioprocessor.js", MIME_TYPE_text_javascript);
     server.onRequest("/google-processor.js", "PUBLIC/google-processor.js", MIME_TYPE_text_javascript);
+    server.onRequest("/checklat",checklat);
 
     server.onRequest("/join-participant", "PUBLIC/join-meeting.html", MIME_TYPE_text_html);
     server.onRequest("/copy-image.png", "PUBLIC/index.png", MIME_TYPE_image_png);
