@@ -76,7 +76,7 @@ const init = async () => {
     );
   };
 
-  recordMeeting(meeting.self.audioTrack);
+  recordMeeting(meeting.self.rawAudioTrack);
 };
 
 init();
