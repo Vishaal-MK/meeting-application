@@ -110,4 +110,4 @@ const init = async () => {
 
 init();
 
-checklatency();
+//checklatency();
