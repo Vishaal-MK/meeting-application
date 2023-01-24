@@ -194,7 +194,7 @@ RESPONSE join_meet(httpRequest req, httpResponse res, void *)
 
     nlohmann::json j;
     j["clientSpecificId"] = getRandomSessionId(5);
-    j["roleName"] = ht;
+    j["presetName"] = "Bhasa";
     j["userDetails"]["name"] = name;
     j["userDetails"]["picture"] = "http://example.com";
     console::log("sending data is ");
