@@ -194,14 +194,19 @@ RESPONSE join_meet(httpRequest req, httpResponse res, void *)
 
     nlohmann::json j;
     j["clientSpecificId"] = getRandomSessionId(5);
-    j["presetName"] = "Bhasa";
-        j["roleName"]=ht;
+      if(ht.compare("host") ==0){
+       j["roleName"]=ht;
+    }
+    else{
+    
+        j["presetName"] = "Bhasa";
+
+    }
 
     j["userDetails"]["name"] = name;
     
     j["userDetails"]["picture"] = "http://example.com";
-    console::log("sending data is ");
-    console::log(j.dump());
+    
     try
     {
         nlohmann::json response = API::post(u1, j.dump(), {{"Authorization", auth_value}, {"Content-Type", "application/json"}});
