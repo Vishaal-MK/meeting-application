@@ -34,6 +34,10 @@ RESPONSE create_meet_api(httpRequest req, httpResponse res, void *)
     {
         jx["presetName"]=preset;
     }
+    else
+    {
+        jx["presetName"]="Kaybas";
+    }
     if (title.empty())
     {
         j["success"] = false;
@@ -46,7 +50,7 @@ RESPONSE create_meet_api(httpRequest req, httpResponse res, void *)
         jx["liveStreamOnStart"] = false;
 
         
-        jx["authorization"]["waitingRoom"] = false;
+        jx["authorization"]["waitingRoom"] = true;
         jx["authorization"]["closed"] = false;
         try
         {
@@ -101,7 +105,7 @@ RESPONSE close_meet(httpRequest req, httpResponse res, void *)
         baseurl += meetId;
         nlohmann::json resp;
         resp["status"] = "CLOSED";
-        resp["presetName"] = "Bhasa";
+        resp["presetName"] = "Kaybase";
         resp["title"] = title;
 
         nlohmann::json response = API::put(baseurl, resp.dump(), {{"Authorization", auth_value}, {"Content-Type", "application/json"}});
@@ -122,8 +126,8 @@ RESPONSE create_meet(httpRequest req, httpResponse res, void *)
     j["recordOnStart"] = false;
     j["liveStreamOnStart"] = false;
 
-    j["presetName"] = "Bhasa";
-    j["authorization"]["waitingRoom"] = false;
+    j["presetName"] = "Kaybase";
+    j["authorization"]["waitingRoom"] = true;
     j["authorization"]["closed"] = false;
     try
     {
