@@ -36,7 +36,7 @@ RESPONSE create_meet_api(httpRequest req, httpResponse res, void *)
     }
     else
     {
-        jx["presetName"]="Kaybas";
+        jx["presetName"]="Kaybase";
     }
     if (title.empty())
     {
