@@ -200,7 +200,7 @@ RESPONSE join_meet(httpRequest req, httpResponse res, void *)
     }
     else{
     
-        j["presetName"] = "Bhasa";
+        j["presetName"] = "Kaybase";
 
     }
 
