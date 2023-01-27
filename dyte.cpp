@@ -28,14 +28,11 @@ RESPONSE create_meet_api(httpRequest req, httpResponse res, void *)
 {
     nlohmann::json j;
     std::string title = req._GET("title");
-    std::string onstart = req._GET("startRecording");
-    bool x = false;
-    if (!onstart.empty())
+    std::string preset = req._GET("preset");
+    nlohmann::json jx;
+    if (!preset.empty())
     {
-        if (onstart.compare("true"))
-        {
-            x = true;
-        }
+        jx["presetName"]=preset;
     }
     if (title.empty())
     {
@@ -43,12 +40,12 @@ RESPONSE create_meet_api(httpRequest req, httpResponse res, void *)
     }
     else
     {
-        nlohmann::json jx;
+        
         jx["title"] = title;
-        jx["recordOnStart"] = x;
+        jx["recordOnStart"] = false;
         jx["liveStreamOnStart"] = false;
 
-        jx["presetName"] = "Bhasa";
+        
         jx["authorization"]["waitingRoom"] = false;
         jx["authorization"]["closed"] = false;
         try
