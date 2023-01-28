@@ -46,7 +46,7 @@ RESPONSE create_meet_api(httpRequest req, httpResponse res, void *)
         jx["liveStreamOnStart"] = false;
 
         
-        jx["authorization"]["waitingRoom"] = false;
+        jx["authorization"]["waitingRoom"] = true;
         jx["authorization"]["closed"] = false;
         try
         {
