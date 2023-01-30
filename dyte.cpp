@@ -192,7 +192,7 @@ RESPONSE join_meet(httpRequest req, httpResponse res, void *)
     nlohmann::json j;
     j["clientSpecificId"] = getRandomSessionId(5);
      if(ht.compare("host") ==0){
-         j["roleName"]="host";
+         j["preset"]="Kaybase-host";
     }
     else{
     
