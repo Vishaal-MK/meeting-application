@@ -80,6 +80,16 @@ const init = async () => {
       video: true,
     },
   });
+  meeting.self.on('roomLeft', () => {
+    const ws2 = getWebSocket();
+     ws2.close();
+    //  console.log("closed");
+  });
+  meeting.self.on('roomJoined', () => {
+    recordMeeting(meeting.self.audioTrack);
+
+  });
+
 
   document.getElementById("my-meeting").meeting = meeting;
   context = new AudioContext({
@@ -105,7 +115,7 @@ const init = async () => {
     );
   };
 
-  recordMeeting(meeting.self.rawAudioTrack);
+
 };
 
 init();
