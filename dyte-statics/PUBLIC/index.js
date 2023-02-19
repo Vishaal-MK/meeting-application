@@ -25,6 +25,37 @@ function getWebSocket() {
 function setWebSocket(newWS) {
   ws = newWS;
 }
+function onopen(){
+  const ws2 = getWebSocket();
+
+  ws2.send(
+    JSON.stringify(window.dataObj)
+  );
+}
+function onclose(){
+  console.info("Connection to websocket closed");
+  console.log("establishing new connection");
+ 
+  const ws2 = new WebSocket("wss://transcribe-api.bhasa.io/ws/record");
+  // ws2.onmess;
+  ws2.onopen =   onopen;
+  ws2.onclose = onclose;
+  ws2.onerror = onerror;
+  setWebSocket(ws2);
+
+}
+function onerror(error){
+
+  console.log("establishing new connection");
+ 
+ let a=getWebSocket();
+  const ws2 = new WebSocket("wss://transcribe-api.bhasa.io/ws/record");
+  // ws2.onmess;
+  ws2.onopen =   onopen;
+  ws2.onclose = onclose;
+  ws2.onerror = onerror;
+  setWebSocket(ws2);
+}
 var context;
 function checklatency() {
   let ax = [];
@@ -43,7 +74,7 @@ function checklatency() {
   a.then((response) => {
     var end = new Date().getTime();
 
-     alert(`Your Network Latency is ${end-start}ms`);
+     alert(`${end-start}ms`);
   });
 }
 async function recordMeeting(track) {
@@ -54,12 +85,13 @@ async function recordMeeting(track) {
   globalStream.addTrack(track);
 
   var input = context.createMediaStreamSource(globalStream);
-  var processor = new window.AudioWorkletNode(context, "recorder.worklet");
+  window.processor = new window.AudioWorkletNode(context, "recorder.worklet");
   processor.connect(context.destination);
   context.resume();
   input.connect(processor);
 
   processor.port.onmessage = (e) => {
+    console.log("sending data");
     const audioData = e.data;
     const ws2 = getWebSocket();
     const a = [1, 2, 4];
@@ -80,34 +112,36 @@ const init = async () => {
       video: true,
     },
   });
+ 
+  meeting.self.on('roomLeft', () => {
+    const ws2 = getWebSocket();
+     ws2.close();
+    //  console.log("closed");
+  });
+  meeting.self.on('roomJoined', () => {
+    recordMeeting(meeting.self.audioTrack);
+
+  });
 
   document.getElementById("my-meeting").meeting = meeting;
   context = new AudioContext({
     latencyHint: "interactive",
   });
+  window.dataObj ={
+    meeting_id: meeting.meta.meetingTitle,
+    participant_id: meeting.self.name,
+    sampleRate: context.sampleRate,
+  };
   const ws2 = new WebSocket("wss://transcribe-api.bhasa.io/ws/record");
   setWebSocket(ws2);
 
   ws2.onmessage = async (event) => {};
-  ws2.onerror = (err) => {
-    console.error("websocket error: ", err);
-  };
-  ws2.onclose = () => {
-    console.info("Connection to websocket closed");
-  };
-  ws2.onopen = () => {
-    ws2.send(
-      JSON.stringify({
-        meeting_id: window.roomname,
-        participant_id: meeting.self.name,
-        sample_rate: context.sampleRate,
-      })
-    );
-  };
+  ws2.onerror = onerror
+  ws2.onclose = onclose;
+  ws2.onopen = onopen;
 
-  recordMeeting(meeting.self.rawAudioTrack);
 };
 
 init();
 
-//checklatency();
+checklatency();
