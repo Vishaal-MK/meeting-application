@@ -34,14 +34,14 @@ function onopen(){
 }
 function onclose(){
   console.info("Connection to websocket closed");
-  console.log("establishing new connection");
+//  console.log("establishing new connection");
  
-  const ws2 = new WebSocket("wss://transcribe-api.bhasa.io/ws/record");
+ // const ws2 = new WebSocket("wss://transcribe-api.bhasa.io/ws/record");
   // ws2.onmess;
-  ws2.onopen =   onopen;
-  ws2.onclose = onclose;
-  ws2.onerror = onerror;
-  setWebSocket(ws2);
+ // ws2.onopen =   onopen;
+  //ws2.onclose = onclose;
+  //ws2.onerror = onerror;
+  //setWebSocket(ws2);
 
 }
 function onerror(error){
