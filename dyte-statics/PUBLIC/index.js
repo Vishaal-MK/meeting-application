@@ -1,3 +1,4 @@
+
 function floatTo16BitPCM(input) {
   let output = new Int16Array(input.length);
   for (let i = 0; i < input.length; i++) {
@@ -25,37 +26,6 @@ function getWebSocket() {
 function setWebSocket(newWS) {
   ws = newWS;
 }
-function onopen(){
-  const ws2 = getWebSocket();
-
-  ws2.send(
-    JSON.stringify(window.dataObj)
-  );
-}
-function onclose(){
-  console.info("Connection to websocket closed");
-//  console.log("establishing new connection");
- 
- // const ws2 = new WebSocket("wss://transcribe-api.bhasa.io/ws/record");
-  // ws2.onmess;
- // ws2.onopen =   onopen;
-  //ws2.onclose = onclose;
-  //ws2.onerror = onerror;
-  //setWebSocket(ws2);
-
-}
-function onerror(error){
-
-  console.log("establishing new connection");
- 
- let a=getWebSocket();
-  const ws2 = new WebSocket("wss://transcribe-api.bhasa.io/ws/record");
-  // ws2.onmess;
-  ws2.onopen =   onopen;
-  ws2.onclose = onclose;
-  ws2.onerror = onerror;
-  setWebSocket(ws2);
-}
 var context;
 function checklatency() {
   let ax = [];
@@ -74,7 +44,7 @@ function checklatency() {
   a.then((response) => {
     var end = new Date().getTime();
 
-     alert(`${end-start}ms`);
+     alert(`Your Network Latency is ${end-start}ms`);
   });
 }
 async function recordMeeting(track) {
@@ -85,17 +55,17 @@ async function recordMeeting(track) {
   globalStream.addTrack(track);
 
   var input = context.createMediaStreamSource(globalStream);
-  window.processor = new window.AudioWorkletNode(context, "recorder.worklet");
+  var processor = new window.AudioWorkletNode(context, "recorder.worklet");
   processor.connect(context.destination);
   context.resume();
   input.connect(processor);
 
   processor.port.onmessage = (e) => {
-    console.log("sending data");
     const audioData = e.data;
     const ws2 = getWebSocket();
     const a = [1, 2, 4];
     if ((ws2 == null ? void 0 : ws2.readyState) === WebSocket.OPEN) {
+      // console.log("working");
       let x = floatTo16BitPCM(e.data);
       ws2.send(x.buffer);
     } else {
@@ -112,36 +82,51 @@ const init = async () => {
       video: true,
     },
   });
- 
   meeting.self.on('roomLeft', () => {
     const ws2 = getWebSocket();
      ws2.close();
-    //  console.log("closed");
   });
   meeting.self.on('roomJoined', () => {
     recordMeeting(meeting.self.audioTrack);
 
   });
-
   document.getElementById("my-meeting").meeting = meeting;
   context = new AudioContext({
     latencyHint: "interactive",
   });
-  window.dataObj ={
-    meeting_id: meeting.meta.meetingTitle,
-    participant_id: meeting.self.name,
-    sampleRate: context.sampleRate,
-  };
   const ws2 = new WebSocket("wss://transcribe-api.bhasa.io/ws/record");
   setWebSocket(ws2);
 
   ws2.onmessage = async (event) => {};
-  ws2.onerror = onerror
-  ws2.onclose = onclose;
-  ws2.onopen = onopen;
+  ws2.onerror = (err) => {
+    console.error("websocket error: ", err);
+  };
+  
+  ws2.onclose = () => {
+      const ws3 = new WebSocket("wss://transcribe-api.bhasa.io/ws/record");
+      ws3.onclose = ws2.onclose;
+      ws3.onopen = ()=>{
+      ws3.send(
+          JSON.stringify({
+            meeting_id: window.roomname,
+            participant_id: meeting.self.name,
+            sample_rate: context.sampleRate,
+          })
+        );
+      };
+      setWebSocket(ws3);
+  };
+  ws2.onopen = () => {
+    ws2.send(
+      JSON.stringify({
+        meeting_id: window.roomname,
+        participant_id: meeting.self.name,
+        sample_rate: context.sampleRate,
+      })
+    );
+  };
 
+  // recordMeeting(meeting.self.rawAudioTrack);
 };
 
 init();
-
-// checklatency();
