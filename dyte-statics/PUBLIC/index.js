@@ -87,7 +87,21 @@ const init = async () => {
      ws2.close();
   });
   meeting.self.on('roomJoined', () => {
-    recordMeeting(meeting.self.audioTrack);
+    navigator.mediaDevices
+      .getUserMedia({
+        audio: true,
+      })
+      .then((stream) => {
+        console.log("stream is started by our self");
+        let mytracks = stream.getAudioTracks();
+        if(mytracks.length ==0 ) console.log("track is empty");
+        recordMeeting(mytracks[0]);
+      })
+      .catch((err) => {
+        /* handle the error */
+       console.log("error happed ",err); 
+    });
+//     recordMeeting(meeting.self.audioTrack);
 
   });
   document.getElementById("my-meeting").meeting = meeting;
