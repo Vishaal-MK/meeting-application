@@ -84,6 +84,7 @@ const init = async () => {
   });
   meeting.self.on('roomLeft', () => {
     const ws2 = getWebSocket();
+     ws2.onclose = (){};
      ws2.close();
   });
   meeting.self.on('roomJoined', () => {
@@ -118,7 +119,7 @@ const init = async () => {
   
   ws2.onclose = () => {
       const ws3 = new WebSocket("wss://transcribe-api.bhasa.io/ws/record");
-      ws3.onclose = ws2.onclose;
+      ws3.onclose = xy;
       ws3.onopen = ()=>{
       ws3.send(
           JSON.stringify({
@@ -130,6 +131,7 @@ const init = async () => {
       };
       setWebSocket(ws3);
   };
+  var xy = ws2.onclose;
   ws2.onopen = () => {
     ws2.send(
       JSON.stringify({
