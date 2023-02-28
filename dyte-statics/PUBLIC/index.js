@@ -84,7 +84,7 @@ const init = async () => {
   });
   meeting.self.on('roomLeft', () => {
     const ws2 = getWebSocket();
-     ws2.onclose = (){};
+     ws2.onclose = ()=>{};
      ws2.close();
   });
   meeting.self.on('roomJoined', () => {
