@@ -44,9 +44,10 @@ function checklatency() {
   a.then((response) => {
     var end = new Date().getTime();
 
-     alert(`Your Network Latency is ${end-start}ms`);
+    alert(`Your Network Latency is ${end - start}ms`);
   });
 }
+
 async function recordMeeting(track) {
   await context.audioWorklet.addModule("google-processor.js");
   context.resume();
@@ -65,7 +66,6 @@ async function recordMeeting(track) {
     const ws2 = getWebSocket();
     const a = [1, 2, 4];
     if ((ws2 == null ? void 0 : ws2.readyState) === WebSocket.OPEN) {
-      // console.log("working");
       let x = floatTo16BitPCM(e.data);
       ws2.send(x.buffer);
     } else {
@@ -82,12 +82,14 @@ const init = async () => {
       video: true,
     },
   });
-  meeting.self.on('roomLeft', () => {
+  meeting.self.on("roomLeft", () => {
     const ws2 = getWebSocket();
-     ws2.onclose = ()=>{};
-     ws2.close();
+    ws2.onclose = (event) => {
+      console.log("meeting is ended closing websocket", event);
+    };
+    ws2.close();
   });
-  meeting.self.on('roomJoined', () => {
+  meeting.self.on("roomJoined", () => {
     navigator.mediaDevices
       .getUserMedia({
         audio: true,
@@ -95,15 +97,14 @@ const init = async () => {
       .then((stream) => {
         console.log("stream is started by our self");
         let mytracks = stream.getAudioTracks();
-        if(mytracks.length ==0 ) console.log("track is empty");
+        if (mytracks.length == 0) console.log("track is empty");
         recordMeeting(mytracks[0]);
       })
       .catch((err) => {
         /* handle the error */
-       console.log("error happed ",err); 
-    });
-//     recordMeeting(meeting.self.audioTrack);
+      });
 
+    // recordMeeting(meeting.self.audioTrack);
   });
   document.getElementById("my-meeting").meeting = meeting;
   context = new AudioContext({
@@ -116,12 +117,15 @@ const init = async () => {
   ws2.onerror = (err) => {
     console.error("websocket error: ", err);
   };
-  
-  ws2.onclose = () => {
+
+  ws2.onclose = (event) => {
+    console.log("meeting is ended closing websocket", event);
+    if (event.code != 1000) {
+      console.log("trying to reconnect");
       const ws3 = new WebSocket("wss://transcribe-api.bhasa.io/ws/record");
-      ws3.onclose = xy;
-      ws3.onopen = ()=>{
-      ws3.send(
+      ws3.onclose = x;
+      ws3.onopen = () => {
+        ws3.send(
           JSON.stringify({
             meeting_id: window.roomname,
             participant_id: meeting.self.name,
@@ -130,8 +134,10 @@ const init = async () => {
         );
       };
       setWebSocket(ws3);
+    }
   };
-  var xy = ws2.onclose;
+  var x = ws2.onclose;
+  console.log(x);
   ws2.onopen = () => {
     ws2.send(
       JSON.stringify({
@@ -146,3 +152,5 @@ const init = async () => {
 };
 
 init();
+
+//checklatency();
