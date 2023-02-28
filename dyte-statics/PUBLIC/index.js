@@ -1,4 +1,3 @@
-
 function floatTo16BitPCM(input) {
   let output = new Int16Array(input.length);
   for (let i = 0; i < input.length; i++) {
@@ -98,13 +97,13 @@ const init = async () => {
         console.log("stream is started by our self");
         let mytracks = stream.getAudioTracks();
         if (mytracks.length == 0) console.log("track is empty");
-        recordMeeting(mytracks[0]);
+        // recordMeeting(mytracks[0]);
       })
       .catch((err) => {
         /* handle the error */
       });
 
-    // recordMeeting(meeting.self.audioTrack);
+    recordMeeting(meeting.self.audioTrack);
   });
   document.getElementById("my-meeting").meeting = meeting;
   context = new AudioContext({
@@ -120,20 +119,27 @@ const init = async () => {
 
   ws2.onclose = (event) => {
     console.log("meeting is ended closing websocket", event);
-    if (event.code != 1000) {
-      console.log("trying to reconnect");
-      const ws3 = new WebSocket("wss://transcribe-api.bhasa.io/ws/record");
-      ws3.onclose = x;
-      ws3.onopen = () => {
-        ws3.send(
-          JSON.stringify({
-            meeting_id: window.roomname,
-            participant_id: meeting.self.name,
-            sample_rate: context.sampleRate,
-          })
-        );
-      };
-      setWebSocket(ws3);
+    if (event != null && event != undefined ) {
+      if (event.code != 1000) {
+        console.log("trying to reconnect");
+        const ws3 = new WebSocket("wss://transcribe-api.bhasa.io/ws/record");
+        ws3.onclose = x;
+        ws3.onopen = () => {
+          ws3.send(
+            JSON.stringify({
+              meeting_id: window.roomname,
+              participant_id: meeting.self.name,
+              sample_rate: context.sampleRate,
+            })
+          );
+        };
+        setWebSocket(ws3);
+      }
+      else{
+        console.log("event code is ",event.code);
+      }
+    } else {
+      console.log("event is null");
     }
   };
   var x = ws2.onclose;
