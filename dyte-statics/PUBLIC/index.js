@@ -114,26 +114,29 @@ const init = async () => {
 
   ws2.onmessage = async (event) => {};
   ws2.onerror = (err) => {
+    
     console.error("websocket error: ", err);
+     window.location.reload()
   };
 
   ws2.onclose = (event) => {
     console.log("meeting is ended closing websocket", event);
     if (event != null && event != undefined ) {
       if (event.code != 1000) {
-        console.log("trying to reconnect");
-        const ws3 = new WebSocket("wss://transcribe-api.bhasa.io/ws/record");
-        ws3.onclose = x;
-        ws3.onopen = () => {
-          ws3.send(
-            JSON.stringify({
-              meeting_id: window.roomname,
-              participant_id: meeting.self.name,
-              sample_rate: context.sampleRate,
-            })
-          );
-        };
-        setWebSocket(ws3);
+      //  console.log("trying to reconnect");
+       // const ws3 = new WebSocket("wss://transcribe-api.bhasa.io/ws/record");
+        //ws3.onclose = x;
+        //ws3.onopen = () => {
+         // ws3.send(
+           // JSON.stringify({
+             // meeting_id: window.roomname,
+             // //participant_id: meeting.self.name,
+              //sample_rate: context.sampleRate,
+           // })
+         // );
+       // };
+       // setWebSocket(ws3);
+         window.location.reload()
       }
       else{
         console.log("event code is ",event.code);
