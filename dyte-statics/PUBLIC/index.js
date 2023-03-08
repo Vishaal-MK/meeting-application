@@ -46,7 +46,9 @@ function checklatency() {
     alert(`Your Network Latency is ${end - start}ms`);
   });
 }
-
+var bf_array = new Int16Array();
+var offset = 0;
+var finalArray;
 async function recordMeeting(track) {
   await context.audioWorklet.addModule("google-processor.js");
   context.resume();
@@ -64,11 +66,23 @@ async function recordMeeting(track) {
     const audioData = e.data;
     const ws2 = getWebSocket();
     const a = [1, 2, 4];
+    let x = floatTo16BitPCM(e.data);
     if ((ws2 == null ? void 0 : ws2.readyState) === WebSocket.OPEN) {
-      let x = floatTo16BitPCM(e.data);
+      if(finalArray != undefined && finalArray.byteLength >0 ){
+        console.log("sending previous buffer")
+        ws2.send(finalArray.buffer);
+        finalArray=null;
+      }
+      console.log("sending buffer");
       ws2.send(x.buffer);
     } else {
-      // console.log("error", ws2.readyState);
+      if (finalArray == undefined) {
+        finalArray = x;
+        offset = x.byteLength;
+      } else {
+        finalArray.set(x, offset);
+        offset += x.byteLength;
+      }
     }
   };
 }
@@ -114,32 +128,17 @@ const init = async () => {
 
   ws2.onmessage = async (event) => {};
   ws2.onerror = (err) => {
-    
     console.error("websocket error: ", err);
-     window.location.reload()
   };
 
   ws2.onclose = (event) => {
     console.log("meeting is ended closing websocket", event);
-    if (event != null && event != undefined ) {
+    if (event != null && event != undefined) {
       if (event.code != 1000) {
-      //  console.log("trying to reconnect");
-       // const ws3 = new WebSocket("wss://transcribe-api.bhasa.io/ws/record");
-        //ws3.onclose = x;
-        //ws3.onopen = () => {
-         // ws3.send(
-           // JSON.stringify({
-             // meeting_id: window.roomname,
-             // //participant_id: meeting.self.name,
-              //sample_rate: context.sampleRate,
-           // })
-         // );
-       // };
-       // setWebSocket(ws3);
-         window.location.reload()
-      }
-      else{
-        console.log("event code is ",event.code);
+        window.location.reload();
+        
+      } else {
+        console.log("event code is ", event.code);
       }
     } else {
       console.log("event is null");
@@ -161,5 +160,3 @@ const init = async () => {
 };
 
 init();
-
-//checklatency();
