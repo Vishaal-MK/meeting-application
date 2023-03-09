@@ -1,3 +1,21 @@
+function updateStatus(statusx) {
+  var container = document.querySelector(".status-container");
+  var icon = document.querySelector(".status-icon");
+  var text = document.querySelector(".status-text");
+  if (statusx) {
+    container.classList.remove("offline");
+    container.classList.add("online");
+    icon.style.backgroundColor = "white";
+    text.innerHTML = "Online";
+    text.style.color = "white";
+  } else {
+    container.classList.remove("online");
+    container.classList.add("offline");
+    icon.style.backgroundColor = "white";
+    text.innerHTML = "Offline";
+    text.style.color = "white";
+  }
+}
 function floatTo16BitPCM(input) {
   let output = new Int16Array(input.length);
   for (let i = 0; i < input.length; i++) {
@@ -131,6 +149,7 @@ const init = async () => {
   };
 
   ws2.onclose = (event) => {
+    updateStatus(false);
     console.log("meeting is ended closing websocket", event);
     if (event != null && event != undefined) {
       if (event.code != 1000) {
@@ -146,6 +165,7 @@ const init = async () => {
   var x = ws2.onclose;
   console.log(x);
   ws2.onopen = () => {
+    updateStatus(true);
     ws2.send(
       JSON.stringify({
         meeting_id: window.roomname,
