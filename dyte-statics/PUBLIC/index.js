@@ -89,7 +89,6 @@ async function recordMeeting(track) {
 const init = async () => {
   const meeting = await DyteClient.init({
     authToken: window.authtoken,
-    roomName: window.roomname,
     defaults: {
       audio: true,
       video: true,
