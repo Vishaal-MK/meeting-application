@@ -50,6 +50,9 @@ RESPONSE create_meet_api(httpRequest req, httpResponse res, void *)
 
                 j["success"] = true;
                 j["meetId"] = meetId;
+                 std::string s = "https://meeting.bhasa.io/join-meeting?mid=";
+                s+=meetId;
+                j["url"] = s;
             }
             else
             {
