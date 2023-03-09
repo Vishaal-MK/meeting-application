@@ -192,7 +192,7 @@ RESPONSE join_meet(httpRequest req, httpResponse res, void *)
 
             nlohmann::json x;
             x["authtoken"] = response["data"]["data"]["token"].dump();
-
+            x["mid"] = meetId;
             return res.render("index23.html", x, true);
         }
         else
