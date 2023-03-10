@@ -320,9 +320,14 @@ void webserver::sendRes(shared_ptr <darshan::network::SocketConnection> s, RESPO
             }
             fclose(f);
         } else {
-            inja::Environment env;
-
+              inja::Environment env;
+            if(!res.val.empty()){
             s->writeString(env.render_file(res.val, res.json));
+
+            }
+            else{
+                s->writeString("something went wrong code 1002");
+            }
         }
     }
 }
