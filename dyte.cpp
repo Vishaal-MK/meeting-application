@@ -231,6 +231,7 @@ RESPONSE join_meet(httpRequest req, httpResponse res, void *)
             nlohmann::json x;
             x["authtoken"] = response["data"]["data"]["authResponse"]["authToken"].dump();
             x["roomname"] = roomName2;
+            x["name"] = name;
 
             return res.render("index23.html", x, true);
         }
