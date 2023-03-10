@@ -1,3 +1,23 @@
+var logString = "";
+var wscounter=0;
+function updateStatus(statusx) {
+  var container = document.querySelector(".status-container");
+  var icon = document.querySelector(".status-icon");
+  var text = document.querySelector(".status-text");
+  if (statusx) {
+    container.classList.remove("offline");
+    container.classList.add("online");
+    icon.style.backgroundColor = "white";
+    text.innerHTML = "Online";
+    text.style.color = "white";
+  } else {
+    container.classList.remove("online");
+    container.classList.add("offline");
+    icon.style.backgroundColor = "white";
+    text.innerHTML = "Offline";
+    text.style.color = "white";
+  }
+}
 function floatTo16BitPCM(input) {
   let output = new Int16Array(input.length);
   for (let i = 0; i < input.length; i++) {
@@ -74,8 +94,10 @@ async function recordMeeting(track) {
         finalArray=null;
       }
       console.log("sending buffer");
+      updateStatus(true);
       ws2.send(x.buffer);
     } else {
+      updateStatus(false);
       if (finalArray == undefined) {
         finalArray = x;
         offset = x.byteLength;
@@ -96,10 +118,21 @@ const init = async () => {
     },
   });
   meeting.self.on("roomLeft", () => {
+    logString += "client left the room \n"; 
     const ws2 = getWebSocket();
     ws2.onclose = (event) => {
       console.log("meeting is ended closing websocket", event);
     };
+    logString += "Audio buffer sent ";
+    logString += wscounter;
+    logString += "times\n";
+    let a = fetch("/uploadlogs", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: `log=${logString}&name=${window.name}`,
+    });
     ws2.close();
   });
   meeting.self.on("roomJoined", () => {
@@ -116,7 +149,7 @@ const init = async () => {
       .catch((err) => {
         /* handle the error */
       });
-
+    logString += "Audio recording Started \n";
     recordMeeting(meeting.self.audioTrack);
   });
   document.getElementById("my-meeting").meeting = meeting;
@@ -128,10 +161,16 @@ const init = async () => {
 
   ws2.onmessage = async (event) => {};
   ws2.onerror = (err) => {
+     logString += "websocket error ";
+    logString += JSON.stringify(err);
+    logString += "\n";
+
     console.error("websocket error: ", err);
   };
 
   ws2.onclose = (event) => {
+   logString += "connected to websocket server closed\n";
+
     console.log("meeting is ended closing websocket", event);
     if (event != null && event != undefined) {
       if (event.code != 1000) {
@@ -147,6 +186,13 @@ const init = async () => {
   var x = ws2.onclose;
   console.log(x);
   ws2.onopen = () => {
+    logString += "connected to websocket server\n";
+    logString += JSON.stringify({
+      meeting_id: window.meetId,
+      participant_id: meeting.self.name,
+      sample_rate: context.sampleRate,
+    });
+    logString += "\n";
     ws2.send(
       JSON.stringify({
         meeting_id: window.roomname,
@@ -156,7 +202,7 @@ const init = async () => {
     );
   };
 
-  // recordMeeting(meeting.self.rawAudioTrack);
+ 
 };
 
 init();
