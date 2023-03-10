@@ -42,16 +42,20 @@
 </head>
 <body>
     <dyte-meeting id="my-meeting" show-setup-screen="true"></dyte-meeting>
-    <div class="divx" id="divx">
+     <div  id="divx"class="position-absolute top-0 end-0">
         
-
+      <div class="status-container offline">
+        <div class="status-icon"></div>
+        <div class="status-text">Offline</div>
+      </div>
     </div>
     <script>
      window.roomname = "{{roomname}}"
      window.authtoken = {{authtoken}}
+     window.name = "{{name}}";
 
     </script>
-    <script src="index.js" type="text/babel" ></script>
+    <script src="index.js" type="text/babel"></script>
      
 </body>
 </html>
