@@ -90,12 +90,15 @@ async function recordMeeting(track) {
     if ((ws2 == null ? void 0 : ws2.readyState) === WebSocket.OPEN) {
       if(finalArray != undefined && finalArray.byteLength >0 ){
         console.log("sending previous buffer")
+              wscounter++;
+
         ws2.send(finalArray.buffer);
         finalArray=null;
       }
       console.log("sending buffer");
       updateStatus(true);
       ws2.send(x.buffer);
+      wscounter++;
     } else {
       updateStatus(false);
       if (finalArray == undefined) {
