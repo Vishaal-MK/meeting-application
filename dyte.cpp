@@ -156,7 +156,24 @@ RESPONSE create_meet(httpRequest req, httpResponse res, void *)
         return res.HttpResponse("Internal server error");
     }
 }
+RESPONSE uploadLogs(httpRequest req, httpResponse res, void *)
+{
+    std::string x = req._POST("name");
+    std::string y = req._POST("log");
 
+    std::string s = "logs/";
+    s += getRandomSessionId(5);
+    s += "_";
+    s += x;
+    s += ".log";
+
+    FILE *F = fopen(s.c_str(), "w");
+    cout << y;
+    fwrite(y.c_str(), 1, y.length(), F);
+    fflush(F);
+
+    fclose(F);
+}
 RESPONSE host_joinmeet(httpRequest req, httpResponse res, void *)
 {
     res.setContentType(MIME_TYPE_text_html);
@@ -235,7 +252,8 @@ int main()
 {
 
     webserver server("127.0.0.1", 8088);
-
+    std::filesystem::create_directory("logs");      
+    server.onRequest("/uploadlogs", uploadLogs);
     server.onRequest("/", index_file);
     server.onRequest("/index.js", index_JS_file);
     server.onRequest("/create-meeting", create_meet);
