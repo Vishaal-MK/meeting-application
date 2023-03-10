@@ -213,7 +213,7 @@ RESPONSE join_meet(httpRequest req, httpResponse res, void *)
     }
     else{
     
-        j["roleName"] = "participant";
+        j["presetName"] = "IITM";
 
     }
 
